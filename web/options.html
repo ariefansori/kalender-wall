@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HyprWall Studio · Options</title>
-  <meta name="description" content="Canvas size, clock theme and desktop wallpaper command for HyprWall Studio.">
+  <title>Kalender-Wall · Options</title>
+  <meta name="description" content="Canvas size, clock theme and desktop wallpaper command for Kalender-Wall.">
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="HyprWall Studio home">
+    <a class="brand" href="/" aria-label="Kalender-Wall home">
       <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="brand-text">HYPRWALL<small>STUDIO</small></span>
+      <span class="brand-text">KALENDER<small>-WALL</small></span>
     </a>
     <nav class="tabs" data-nav aria-label="Sections"></nav>
     <div class="topbar-actions">
@@ -91,6 +91,14 @@
           fallback, so a busy login session still gets a wallpaper.
         </p>
         <div class="backend-list" id="backendList" role="radiogroup" aria-label="Wallpaper command"></div>
+        <label class="check">
+          <input type="checkbox" id="caelestiaScheme">
+          <span>
+            Follow the preset theme in Caelestia — runs
+            <code>caelestia scheme set --mode dark</code> for dark presets and
+            <code>--mode light</code> for light ones.
+          </span>
+        </label>
         <label class="field" id="customCommandField" hidden>
           <span class="field-label">Custom command</span>
           <input id="customCommand" type="text" spellcheck="false" autocomplete="off" placeholder="swaybg -i {path}">

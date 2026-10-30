@@ -31,13 +31,19 @@ CALENDAR_DESIGNS: dict[str, tuple[int, int]] = {
 }
 
 #: Layout overrides that ignore the style's own design space: one row of days
-#: (horizontal strip) or one column of days (vertical grid).
+#: (horizontal strip) or one column of days (vertical grid).  ``vertical`` is
+#: built for the left screen edge (numbers outside, weekdays inside);
+#: ``vertical-right`` mirrors the columns for the right edge.
 CALENDAR_LAYOUTS: dict[str, tuple[int, int]] = {
     "horizontal": (1800, 280),
     "vertical": (420, 1240),
+    "vertical-right": (420, 1240),
 }
 
-LAYOUT_NAMES = ("auto", "horizontal", "vertical")
+LAYOUT_NAMES = ("auto", "horizontal", "vertical", "vertical-right")
+
+#: Widest horizontal gap the ``gap`` prop can pull the weekday column through.
+MAX_DAY_GAP = 260.0
 
 MONTHS = (
     "January",
@@ -108,6 +114,7 @@ def calendar_style(props: dict[str, Any]) -> dict[str, Any]:
         "show_title": bool(props.get("showTitle", True)),
         "show_weekdays": bool(props.get("showWeekdays", True)),
         "show_lines": bool(props.get("showLines", True)),
+        "gap": max(0.0, min(MAX_DAY_GAP, float(props.get("gap", 0) or 0))),
         "radius": max(0.0, float(props.get("radius", 28))),
         "glass": bool(props.get("glass", False)),
         "glass_blur": max(0.0, min(80.0, float(props.get("glassBlur", 18) or 0))),
@@ -430,9 +437,17 @@ def _draw_horizontal(pen: _Pen, style: dict[str, Any]) -> None:
         )
 
 
-def _draw_vertical(pen: _Pen, style: dict[str, Any]) -> None:
-    """One column of the month's days: number on the left, weekday on the right."""
-    design_w, design_h = CALENDAR_LAYOUTS["vertical"]
+def _draw_vertical(pen: _Pen, style: dict[str, Any], *, mirrored: bool = False) -> None:
+    """One column of the month's days.
+
+    ``vertical`` puts the day numbers on the outer (left) edge and the weekday
+    labels on the inner edge; ``vertical-right`` mirrors that so the numbers sit
+    against the right screen edge.  ``gap`` pulls the weekday column towards the
+    day numbers, which is the only direction with room to move — the numbers are
+    already pinned to the outer edge.
+    """
+
+    design_w, design_h = CALENDAR_LAYOUTS["vertical-right" if mirrored else "vertical"]
     pad = 22.0
     if style["card"]:
         pen.rect((0, 0, design_w, design_h), style["bg"], style["radius"])
@@ -449,6 +464,15 @@ def _draw_vertical(pen: _Pen, style: dict[str, Any]) -> None:
     bottom = design_h - pad
     row_h = (bottom - top) / days_in_month
     number_size = min(row_h * 0.56, 26.0)
+
+    # Distance between the number column and the weekday column.
+    gap = max(0.0, min(style["gap"], design_w - pad * 2 - 80))
+    if mirrored:
+        number_x, number_anchor = design_w - pad - 4, "right"
+        label_x, label_anchor = pad + 4 + gap, "left"
+    else:
+        number_x, number_anchor = pad + 4, "left"
+        label_x, label_anchor = design_w - pad - 4 - gap, "right"
 
     for index in range(days_in_month):
         number = index + 1
@@ -469,30 +493,40 @@ def _draw_vertical(pen: _Pen, style: dict[str, Any]) -> None:
                 radius=6,
             )
         pen.text(
-            pad + 4,
+            number_x,
             _vertically_centred(number_size, centre_y),
             str(number),
             number_size,
             600,
             style["accent_text"] if is_today else style["fg"],
             0,
+            anchor=number_anchor,
         )
         if style["show_weekdays"]:
             weekday = date(day.year, day.month, number).weekday()
             pen.text(
-                design_w - pad - 4,
+                label_x,
                 _vertically_centred(14, centre_y),
                 calendar_module.day_abbr[weekday].upper(),
                 14,
                 500,
                 style["accent_text"] if is_today else style["muted"],
                 1.4,
-                anchor="right",
+                anchor=label_anchor,
             )
 
 
+def _draw_vertical_right(pen: _Pen, style: dict[str, Any]) -> None:
+    """Mirrored vertical grid for the right screen edge."""
+    _draw_vertical(pen, style, mirrored=True)
+
+
 _DRAWERS = {"grid": _draw_grid, "strip": _draw_strip, "minimal": _draw_minimal}
-_LAYOUT_DRAWERS = {"horizontal": _draw_horizontal, "vertical": _draw_vertical}
+_LAYOUT_DRAWERS = {
+    "horizontal": _draw_horizontal,
+    "vertical": _draw_vertical,
+    "vertical-right": _draw_vertical_right,
+}
 
 
 def render_calendar(widget: dict[str, Any], today: date | None = None, *, card: bool = True) -> Image.Image:

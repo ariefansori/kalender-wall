@@ -261,7 +261,7 @@ async function boot() {
   try {
     state.config = await api.getConfig();
   } catch (error) {
-    showToast(`Could not reach the HyprWall backend: ${error.message}`, { type: 'error', timeout: 0 });
+    showToast(`Could not reach the Kalender-Wall backend: ${error.message}`, { type: 'error', timeout: 0 });
     return;
   }
   dom.dateInput.value = state.date;

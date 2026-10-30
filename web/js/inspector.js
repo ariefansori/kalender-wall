@@ -681,8 +681,13 @@ export class Inspector {
     const layouts = [
       { value: 'auto', label: 'Auto (follow the style)' },
       { value: 'horizontal', label: `Horizontal strip · 1 row (${CALENDAR_LAYOUTS.horizontal.join('×')})` },
-      { value: 'vertical', label: `Vertical grid · 1 column (${CALENDAR_LAYOUTS.vertical.join('×')})` },
+      { value: 'vertical', label: `Vertical grid · left position · 1 column (${CALENDAR_LAYOUTS.vertical.join('×')})` },
+      {
+        value: 'vertical-right',
+        label: `Vertical grid · right position · 1 column (${CALENDAR_LAYOUTS['vertical-right'].join('×')})`,
+      },
     ];
+    const verticalLayout = props.layout === 'vertical' || props.layout === 'vertical-right';
 
     this.host.append(
       this._section('Calendar', [
@@ -701,8 +706,24 @@ export class Inspector {
             this.handlers.props({ layout: value });
             this.handlers.rebuild();
           }),
-          'Horizontal strip lays the month out in one row; vertical grid stacks it in one column.',
+          'Horizontal strip lays the month out in one row. Vertical grid stacks the month in one column: the left position keeps the day numbers on the outer edge, the right position mirrors it for the right screen edge.',
         ),
+        verticalLayout
+          ? this._range('Number ↔ day gap', Number(props.gap) || 0, {
+              min: 0,
+              max: 260,
+              step: 1,
+              format: (value) => `${Math.round(value)}`,
+              onInput: (value) => this.handlers.props({ gap: value }),
+            })
+          : null,
+        verticalLayout
+          ? el(
+              'p',
+              { class: 'field-hint' },
+              'Spacing between the day numbers and the weekday labels: 0 keeps the labels on the inner edge, higher values pull them towards the numbers.',
+            )
+          : null,
         this._field('Date', el('div', { class: 'inline-row' }, dateInput, todayButton), 'Empty = today at render time'),
         this._field(
           'Week starts',

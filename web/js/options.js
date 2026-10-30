@@ -33,6 +33,7 @@ function cacheDom() {
     activeTheme: $('#activeTheme'),
     scheduleSummary: $('#scheduleSummary'),
     backendList: $('#backendList'),
+    caelestiaScheme: $('#caelestiaScheme'),
     customField: $('#customCommandField'),
     customCommand: $('#customCommand'),
     outputHint: $('#outputHint'),
@@ -50,6 +51,7 @@ function values() {
     dayEnd: dom.darkStart.value,
     backend: dom.backendList.querySelector('input[name="backend"]:checked')?.value || '',
     applyCommand: dom.customCommand.value.trim(),
+    caelestiaScheme: dom.caelestiaScheme.checked,
   };
 }
 
@@ -165,6 +167,7 @@ function fill(options) {
   dom.lightStart.value = options.theme?.dayStart || '07:00';
   dom.darkStart.value = options.theme?.dayEnd || '19:00';
   dom.customCommand.value = options.wallpaper.applyCommand || '';
+  dom.caelestiaScheme.checked = options.wallpaper.caelestiaScheme !== false;
   dom.configChip.textContent = `${options.canvas.width} × ${options.canvas.height}`;
   dom.outputHint.textContent = `Wallpapers are written to ${options.wallpaper.outputPath}`;
   renderRatio();
@@ -196,7 +199,11 @@ async function save() {
     const result = await api.saveOptions({
       canvas: { width: current.width, height: current.height },
       theme: { dayStart: current.dayStart, dayEnd: current.dayEnd },
-      wallpaper: { backend: current.backend, applyCommand: current.applyCommand },
+      wallpaper: {
+        backend: current.backend,
+        applyCommand: current.applyCommand,
+        caelestiaScheme: current.caelestiaScheme,
+      },
     });
     fill(result.options);
     const where = result.options.configFile || '~/.config/hyprwall/config.json';

@@ -1,4 +1,4 @@
-"""Configuration, paths and time-of-day theme rules for HyprWall.
+"""Configuration, paths and time-of-day theme rules for Kalender-Wall.
 
 Everything is optionally overridable through ``~/.config/hyprwall/config.json``
 and / or environment variables so the CLI keeps working from any working
@@ -49,7 +49,7 @@ WALLPAPER_BACKENDS: dict[str, dict[str, str]] = {
     },
     "hyprland-caelestia": {
         "label": "Hyprland + Caelestia",
-        "detail": "caelestia wallpaper -N -f <path>",
+        "detail": "caelestia wallpaper -f <path> + caelestia scheme set --mode <theme>",
     },
     "custom": {
         "label": "Custom command",
@@ -84,6 +84,7 @@ class Config:
     clock_theme: str = DEFAULT_CLOCK_THEME
     wallpaper_backend: str = DEFAULT_WALLPAPER_BACKEND
     caelestia_smart_scheme: bool = False
+    caelestia_scheme: bool = True
     source: Path | None = None
     raw: dict[str, Any] = field(default_factory=dict, repr=False)
 
@@ -266,6 +267,7 @@ def load_config(path: Path | None = None) -> Config:
         if str(wallpaper_cfg.get("backend") or DEFAULT_WALLPAPER_BACKEND) in WALLPAPER_BACKENDS
         else DEFAULT_WALLPAPER_BACKEND,
         caelestia_smart_scheme=bool(wallpaper_cfg.get("caelestiaSmartScheme", False)),
+        caelestia_scheme=bool(wallpaper_cfg.get("caelestiaScheme", True)),
         source=config_file if config_file.exists() else None,
         raw=raw,
     )
@@ -333,6 +335,8 @@ def save_options(values: dict[str, Any], path: Path | None = None) -> Config:
         if len(command) > 500:
             raise ConfigError("The custom command is too long (max 500 characters)")
         wallpaper["applyCommand"] = command or None
+    if "caelestiaScheme" in values:
+        wallpaper["caelestiaScheme"] = bool(values["caelestiaScheme"])
     if str(wallpaper.get("backend") or "") == "custom" and not wallpaper.get("applyCommand"):
         raise ConfigError("A custom wallpaper command is required when the custom backend is selected")
     raw["wallpaper"] = wallpaper

@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HyprWall Studio · Editor</title>
+  <title>Kalender-Wall · Editor</title>
   <meta name="description" content="Compose static calendar wallpapers for Hyprland + Caelestia.">
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="HyprWall Studio home">
+    <a class="brand" href="/" aria-label="Kalender-Wall home">
       <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="brand-text">HYPRWALL<small>STUDIO</small></span>
+      <span class="brand-text">KALENDER<small>-WALL</small></span>
     </a>
     <nav class="tabs" data-nav aria-label="Sections"></nav>
     <div class="topbar-actions">
@@ -74,9 +74,15 @@
                 <span class="add-glyph">⇔</span>
                 <span class="add-label">Horizontal strip</span>
               </button>
-              <button class="add-card" type="button" data-add="calendar-vertical" disabled>
+              <button class="add-card" type="button" data-add="calendar-vertical" disabled
+                title="One column of days, day numbers on the outer left edge — for the left of the screen">
                 <span class="add-glyph">⇕</span>
-                <span class="add-label">Vertical grid</span>
+                <span class="add-label">Vertical grid · left</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-vertical-right" disabled
+                title="Mirrored one-column calendar — day numbers on the outer right edge">
+                <span class="add-glyph">⇕</span>
+                <span class="add-label">Vertical grid · right</span>
               </button>
             </div>
             <p class="hint" id="baseHint">Set a base image to unlock widgets.</p>

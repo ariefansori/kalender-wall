@@ -4,8 +4,10 @@
  * The geometry lives on the server (`hyprwall/widgets/shapes.py`) in a single
  * universal `0 0 100 100` viewBox and arrives through `/api/config`, so the
  * editor, the widget page and the Pillow compositor draw the exact same path.
- * A shape is painted into its layer box with a uniform scale, so it never
- * distorts when the widget box changes.
+ * A shape always fills its layer box, scaling X and Y independently: with the
+ * aspect-locked handles the box keeps its ratio (so the shape looks identical),
+ * and in free transform mode stretching the box stretches the shape — a square
+ * becomes a rectangle.
  */
 const shapes = new Map();
 const pathCache = new Map();
@@ -39,11 +41,9 @@ function pathFor(d) {
 export function paintShape(ctx, width, height, props = {}) {
   const shape = shapeById(props.shape);
   if (!shape) return;
-  const size = Math.min(width, height);
-  const scale = size / 100;
+  // Map the 0–100 viewBox onto the whole box, independently per axis.
   ctx.save();
-  ctx.translate((width - size) / 2, (height - size) / 2);
-  ctx.scale(scale, scale);
+  ctx.scale(width / 100, height / 100);
   const path = pathFor(shape.d);
   const fill = props.fill;
   if (fill && fill !== '#00000000') {

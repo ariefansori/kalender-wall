@@ -1,9 +1,12 @@
 """Applying the composed wallpaper to the desktop.
 
 Caelestia draws wallpapers itself through Quickshell, so the primary backend is
-``caelestia wallpaper -f <file>``.  hyprpaper and swww are supported as
-fallbacks, and any other setup can be wired up with ``wallpaper.applyCommand``
-in ``~/.config/hyprwall/config.json``.
+``caelestia wallpaper -f <file>``.  When ``caelestiaScheme`` is enabled (the
+default) the shell's light/dark mode is also set to the preset's own theme:
+``caelestia scheme set --mode dark`` for a dark preset, ``--mode light`` for a
+light one.  hyprpaper and swww are supported as fallbacks, and any other setup
+can be wired up with ``wallpaper.applyCommand`` in
+``~/.config/hyprwall/config.json``.
 """
 
 from __future__ import annotations
@@ -36,6 +39,9 @@ class Attempt:
     ok: bool
     error: str | None = None
     output: str | None = None
+    #: Follow-up steps (Caelestia's colour mode) that failed without undoing
+    #: the wallpaper that was already applied.
+    warnings: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -44,6 +50,8 @@ class ApplyResult:
     backend: str | None = None
     command: list[str] | None = None
     message: str = ""
+    #: Steps that failed after the wallpaper itself was applied.
+    warnings: list[str] = field(default_factory=list)
     attempts: list[Attempt] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -52,12 +60,14 @@ class ApplyResult:
             "backend": self.backend,
             "command": self.command,
             "message": self.message,
+            "warnings": self.warnings,
             "attempts": [
                 {
                     "backend": attempt.backend,
                     "label": attempt.label,
                     "ok": attempt.ok,
                     "error": attempt.error,
+                    "warnings": attempt.warnings,
                 }
                 for attempt in self.attempts
             ],
@@ -131,18 +141,28 @@ def _gnome_commands(path: Path) -> list[list[str]]:
     ] + [[gsettings, "set", "org.gnome.desktop.background", "picture-options", "zoom"]]
 
 
-def _caelestia_command(cfg: Config, path: Path) -> list[str] | None:
+def _caelestia_commands(cfg: Config, path: Path, theme: str | None = None) -> list[list[str]] | None:
+    """Caelestia apply steps: set the wallpaper, then match the preset's mode.
+
+    ``caelestia scheme set --mode dark|light`` makes the shell's colour scheme
+    follow the preset theme, so a dark preset also puts Caelestia in dark mode
+    (and a light preset in light mode).
+    """
     caelestia = shutil.which("caelestia")
     if not caelestia:
         return None
     args = [caelestia, "wallpaper"]
     if not cfg.caelestia_smart_scheme:
-        args.append("-N")  # keep the shell's light/dark mode stable
+        args.append("-N")  # do not derive a scheme from the image itself
     args += ["-f", str(path)]
-    return args
+    commands = [args]
+    mode = theme if theme in ("light", "dark") else None
+    if cfg.caelestia_scheme and mode:
+        commands.append([caelestia, "scheme", "set", "--mode", mode])
+    return commands
 
 
-def build_candidate(backend: str, cfg: Config, path: Path) -> dict[str, Any] | None:
+def build_candidate(backend: str, cfg: Config, path: Path, theme: str | None = None) -> dict[str, Any] | None:
     """One apply strategy for ``backend``, or ``None`` if it is unavailable."""
     if backend == "custom":
         commands = _custom_commands(cfg, path)
@@ -167,12 +187,12 @@ def build_candidate(backend: str, cfg: Config, path: Path) -> dict[str, Any] | N
             "commands": commands,
         }
     if backend == "hyprland-caelestia":
-        command = _caelestia_command(cfg, path)
-        return {"backend": "caelestia", "label": "Caelestia shell", "commands": [command]} if command else None
+        commands = _caelestia_commands(cfg, path, theme)
+        return {"backend": "caelestia", "label": "Caelestia shell", "commands": commands} if commands else None
     return None
 
 
-def candidate_backends(cfg: Config, path: Path) -> list[dict[str, Any]]:
+def candidate_backends(cfg: Config, path: Path, theme: str | None = None) -> list[dict[str, Any]]:
     """Ordered apply strategies: the selected backend first, then fallbacks."""
     order = [cfg.wallpaper_backend] + [
         backend
@@ -182,7 +202,7 @@ def candidate_backends(cfg: Config, path: Path) -> list[dict[str, Any]]:
     candidates: list[dict[str, Any]] = []
     seen: set[str] = set()
     for backend in order:
-        candidate = build_candidate(backend, cfg, path)
+        candidate = build_candidate(backend, cfg, path, theme)
         if not candidate or candidate["backend"] in seen:
             continue
         seen.add(candidate["backend"])
@@ -236,17 +256,18 @@ def detect_backends(cfg: Config | None = None) -> list[str]:
     ]
 
 
-def apply_wallpaper(path: Path, cfg: Config) -> ApplyResult:
+def apply_wallpaper(path: Path, cfg: Config, theme: str | None = None) -> ApplyResult:
+    """Put ``path`` on the desktop; ``theme`` also drives Caelestia's mode."""
     path = Path(path)
     if not path.is_file():
         return ApplyResult(applied=False, message=f"Wallpaper file not found: {path}")
 
     attempts: list[Attempt] = []
-    for candidate in candidate_backends(cfg, path):
+    for candidate in candidate_backends(cfg, path, theme):
         attempt = Attempt(
             backend=candidate["backend"], label=candidate["label"], commands=candidate["commands"], ok=True
         )
-        for command in candidate["commands"]:
+        for index, command in enumerate(candidate["commands"]):
             try:
                 result = subprocess.run(
                     command,
@@ -261,20 +282,27 @@ def apply_wallpaper(path: Path, cfg: Config) -> ApplyResult:
                 break
             if result.returncode != 0:
                 detail = (result.stderr or result.stdout or "").strip().splitlines()
-                attempt.ok = False
-                attempt.error = (
+                failure = (
                     f"{' '.join(command)} exited {result.returncode}"
                     + (f": {detail[-1][:200]}" if detail else "")
                 )
-                break
+                if index == 0:
+                    attempt.ok = False
+                    attempt.error = failure
+                    break
+                # A follow-up step (setting Caelestia's light/dark mode) must not
+                # undo the wallpaper that is already on screen.
+                attempt.warnings.append(failure)
+                continue
             attempt.output = (result.stdout or "").strip()[:400] or None
         attempts.append(attempt)
         if attempt.ok:
             return ApplyResult(
                 applied=True,
                 backend=attempt.backend,
-                command=attempt.commands[-1],
+                command=attempt.commands[0],
                 message=f"Wallpaper applied via {attempt.label}",
+                warnings=attempt.warnings,
                 attempts=attempts,
             )
 

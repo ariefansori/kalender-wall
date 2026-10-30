@@ -3,7 +3,8 @@
 Raster images are opened with Pillow; SVG files are rasterised on the fly with
 cairosvg (needs the system ``libcairo``) so the composited wallpaper matches
 what the browser draws.  Stickers are transform-only: position, scale and
-rotation.  Recolourable vector artwork lives in the shape library instead.
+rotation, and they fill their layer box on both axes so free transform can
+stretch them.  Recolourable vector artwork lives in the shape library instead.
 """
 
 from __future__ import annotations
@@ -126,7 +127,12 @@ def _load_svg(path: str, mtime: float, target_width: int, target_height: int) ->
 
 
 def render_sticker(widget: dict[str, Any]) -> Image.Image:
-    """Render a sticker into an RGBA layer, contained and centred."""
+    """Render a sticker filling an RGBA layer sized to the widget box.
+
+    The box is the truth: the image is stretched to it, exactly like the browser
+    preview.  Aspect-locked resizing keeps the box proportional, so nothing
+    distorts until free transform is used on purpose.
+    """
     width = max(1, int(round(float(widget.get("width", 1)))))
     height = max(1, int(round(float(widget.get("height", 1)))))
     layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
@@ -136,29 +142,16 @@ def render_sticker(widget: dict[str, Any]) -> Image.Image:
     if not path:
         return layer
 
-    is_svg = path.suffix.lower() == ".svg"
     try:
-        if is_svg:
-            source_width, source_height = _open_size(path)
-            scale = min(width / source_width, height / source_height)
-            target = (
-                max(1, int(round(source_width * scale))),
-                max(1, int(round(source_height * scale))),
-            )
-            sticker = _load_svg(str(path), path.stat().st_mtime_ns, *target)
+        if path.suffix.lower() == ".svg":
+            sticker = _load_svg(str(path), path.stat().st_mtime_ns, width, height)
         else:
             sticker = _load(str(path), path.stat().st_mtime_ns)
-            scale = min(width / sticker.width, height / sticker.height)
-            target = (
-                max(1, int(round(sticker.width * scale))),
-                max(1, int(round(sticker.height * scale))),
-            )
     except Exception:  # noqa: BLE001 - a broken SVG must not break the render
         return layer
 
+    target = (width, height)
     if target != sticker.size:
         sticker = sticker.resize(target, Image.Resampling.LANCZOS)
-    left = (width - sticker.width) // 2
-    top = (height - sticker.height) // 2
-    layer.alpha_composite(sticker, dest=(left, top))
+    layer.alpha_composite(sticker, dest=(0, 0))
     return layer

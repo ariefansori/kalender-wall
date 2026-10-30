@@ -167,9 +167,9 @@ def _registry(signature: tuple[tuple[str, int], ...]) -> dict[str, dict]:
     # Unique CSS family names — the browser keys FontFace on them.
     used: dict[str, str] = {}
     for family_id, meta in families.items():
-        css_name = f"HyprWall {meta['label']}"
+        css_name = f"Kalender {meta['label']}"
         if css_name in used and used[css_name] != family_id:
-            css_name = f"HyprWall {meta['label']} ({family_id})"
+            css_name = f"Kalender {meta['label']} ({family_id})"
         used[css_name] = family_id
         meta["cssName"] = css_name
     return families
@@ -184,7 +184,7 @@ def font_css_name(family: str) -> str:
     registry = _families()
     meta = registry.get(family) or registry.get(DEFAULT_FONT)
     if meta is None:  # pragma: no cover - built-in always present
-        return f"HyprWall {FONT_FAMILIES[DEFAULT_FONT]['label']}"
+        return f"Kalender {FONT_FAMILIES[DEFAULT_FONT]['label']}"
     return meta["cssName"]
 
 

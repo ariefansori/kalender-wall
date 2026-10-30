@@ -184,7 +184,7 @@ function renderLayers() {
 function updateChrome() {
   if (!state.doc) return;
   const doc = state.doc;
-  document.title = `${doc.name} · HyprWall widgets`;
+  document.title = `${doc.name} · Kalender-Wall widgets`;
   dom.widgetChip.textContent = doc.name;
   dom.dirtyState.textContent = state.dirty ? 'Unsaved changes' : state.slug ? 'Saved' : 'Not saved';
   dom.dirtyState.classList.toggle('is-dirty', state.dirty);

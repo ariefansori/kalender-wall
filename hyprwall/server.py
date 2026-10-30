@@ -88,7 +88,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="HyprWall Studio", version=__version__, lifespan=lifespan)
+app = FastAPI(title="Kalender-Wall", version=__version__, lifespan=lifespan)
 
 
 def _error(status: int, message: str) -> JSONResponse:
@@ -210,6 +210,7 @@ def api_options() -> dict[str, Any]:
             "backend": cfg.wallpaper_backend,
             "applyCommand": cfg.apply_command or "",
             "smartScheme": cfg.caelestia_smart_scheme,
+            "caelestiaScheme": cfg.caelestia_scheme,
             "outputPath": cfg.output_pattern,
             "backends": backend_status(cfg),
             "labels": WALLPAPER_BACKENDS,
@@ -237,6 +238,8 @@ def api_save_options(payload: dict[str, Any] = Body(...)) -> dict[str, Any]:
         values["backend"] = wallpaper["backend"]
     if "applyCommand" in wallpaper:
         values["applyCommand"] = wallpaper["applyCommand"]
+    if "caelestiaScheme" in wallpaper:
+        values["caelestiaScheme"] = wallpaper["caelestiaScheme"]
     try:
         save_options(values)
     except ConfigError as exc:
@@ -444,7 +447,7 @@ def api_apply_preset(slug: str) -> dict[str, Any]:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     except (PresetError, OSError) as exc:
         raise HTTPException(status_code=500, detail=f"Could not compose wallpaper: {exc}") from exc
-    result = apply_wallpaper(output, cfg)
+    result = apply_wallpaper(output, cfg, theme=presets.load(slug)["theme"])
     if result.applied:
         state = cfg.read_state()
         state.update(

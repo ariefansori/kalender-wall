@@ -269,7 +269,7 @@ async function boot() {
     state.config = await api.getConfig();
     await loadFonts(state.config.fonts);
   } catch (error) {
-    showToast(`Could not reach the HyprWall backend: ${error.message}`, { type: 'error', timeout: 0 });
+    showToast(`Could not reach the Kalender-Wall backend: ${error.message}`, { type: 'error', timeout: 0 });
     return;
   }
   $('#refreshBtn').addEventListener('click', async (event) => {

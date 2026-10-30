@@ -32,16 +32,17 @@ export function whenReady(src, listener) {
   if (entry?.state === 'loading') entry.listeners.add(listener);
 }
 
-/** Sticker images are transform-only: position, scale and rotation. */
+/**
+ * Sticker images are transform-only: position, scale and rotation.
+ *
+ * The image fills its layer box.  With the aspect-locked handles the box keeps
+ * the image ratio, so nothing distorts; in free transform mode the box — and
+ * therefore the sticker — stretches on each axis independently.
+ */
 export function paintSticker(ctx, width, height, src) {
   const entry = getSticker(src);
   if (!entry || entry.state !== 'ready') return;
   const { image } = entry;
   if (!image.naturalWidth || !image.naturalHeight) return;
-  const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
-  const targetWidth = Math.max(1, Math.round(image.naturalWidth * scale));
-  const targetHeight = Math.max(1, Math.round(image.naturalHeight * scale));
-  const left = Math.round((width - targetWidth) / 2);
-  const top = Math.round((height - targetHeight) / 2);
-  ctx.drawImage(image, left, top, targetWidth, targetHeight);
+  ctx.drawImage(image, 0, 0, Math.max(1, width), Math.max(1, height));
 }

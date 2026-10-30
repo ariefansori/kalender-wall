@@ -132,8 +132,9 @@ def command_apply(args: argparse.Namespace) -> int:
         _log(f"[hyprwall] wallpaper backend: {cfg.wallpaper_backend}", quiet)
         backends = detect_backends()
         _log(f"[hyprwall] apply backends: {', '.join(backends) or 'none detected'}", quiet)
-        for candidate in candidate_backends(cfg, output):
-            _log(f"[hyprwall]   {candidate['label']}: {' '.join(candidate['commands'][-1])}", quiet)
+        for candidate in candidate_backends(cfg, output, theme):
+            steps = " && ".join(" ".join(command) for command in candidate["commands"])
+            _log(f"[hyprwall]   {candidate['label']}: {steps}", quiet)
         _log("[hyprwall] dry run: nothing rendered or applied", quiet)
         return 0
 
@@ -169,9 +170,11 @@ def command_apply(args: argparse.Namespace) -> int:
     attempt = 0
     while True:
         attempt += 1
-        result = apply_wallpaper(rendered, cfg)
+        result = apply_wallpaper(rendered, cfg, theme=theme)
         if result.applied:
             _log(f"[hyprwall] {result.message}: {' '.join(result.command or [])}", quiet)
+            for warning in result.warnings:
+                print(f"[hyprwall] warning: {warning}", file=sys.stderr, flush=True)
             state["lastBackend"] = result.backend
             state["lastApplyOk"] = True
             cfg.write_state(state)
@@ -228,7 +231,7 @@ def command_doctor(args: argparse.Namespace) -> int:
     theme = cfg.theme_for()
     ok = True
 
-    print(f"HyprWall {__version__}")
+    print(f"Kalender-Wall {__version__}")
     print(f"  python          {sys.version.split()[0]}")
     try:
         import PIL
@@ -274,6 +277,10 @@ def command_doctor(args: argparse.Namespace) -> int:
         print(f"  last output     {last_output} ({'exists' if Path(last_output).is_file() else 'missing'})")
 
     print(f"  caelestia smart {'on' if cfg.caelestia_smart_scheme else 'off (passes -N)'}")
+    print(
+        "  caelestia mode  "
+        + ("follows the preset (`caelestia scheme set --mode light|dark`)" if cfg.caelestia_scheme else "left untouched")
+    )
     return 0 if ok else 1
 
 
@@ -285,7 +292,7 @@ def command_serve(args: argparse.Namespace) -> int:
 
     host = args.host
     display_host = "localhost" if host in ("127.0.0.1", "0.0.0.0") else host
-    _log(f"HyprWall Studio → http://{display_host}:{args.port}")
+    _log(f"Kalender-Wall → http://{display_host}:{args.port}")
     uvicorn.run("hyprwall.server:app", host=host, port=args.port, reload=args.reload)
     return 0
 

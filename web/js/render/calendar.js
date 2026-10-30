@@ -7,11 +7,18 @@ export const CALENDAR_DESIGNS = {
   minimal: [520, 640],
 };
 
-/** Layout overrides: one row of days, or one column of days. */
+/**
+ * Layout overrides: one row of days, one column for the left screen edge, or
+ * the mirrored column for the right edge.
+ */
 export const CALENDAR_LAYOUTS = {
   horizontal: [1800, 280],
   vertical: [420, 1240],
+  'vertical-right': [420, 1240],
 };
+
+/** Widest horizontal gap the ``gap`` prop can pull the weekday column through. */
+export const MAX_DAY_GAP = 260;
 
 export function calendarDesign(props = {}) {
   const layout = CALENDAR_LAYOUTS[props.layout] ? props.layout : null;
@@ -62,6 +69,7 @@ export function resolveStyle(props) {
     showTitle: props.showTitle !== false,
     showWeekdays: props.showWeekdays !== false,
     showLines: props.showLines !== false,
+    gap: Math.max(0, Math.min(MAX_DAY_GAP, Number(props.gap) || 0)),
     radius: Math.max(0, Number(props.radius) || 0),
     glass: Boolean(props.glass),
     glassBlur: Math.max(0, Math.min(80, Number(props.glassBlur) || 0)),
@@ -374,8 +382,8 @@ function drawHorizontal(pen, style) {
   }
 }
 
-function drawVertical(pen, style) {
-  const [designW, designH] = CALENDAR_LAYOUTS.vertical;
+function drawVertical(pen, style, mirrored = false) {
+  const [designW, designH] = CALENDAR_LAYOUTS[mirrored ? 'vertical-right' : 'vertical'];
   const pad = 22;
   if (style.card) pen.rect([0, 0, designW, designH], style.bg, style.radius);
 
@@ -396,6 +404,14 @@ function drawVertical(pen, style) {
   const rowHeight = (bottom - top) / daysInMonth;
   const numberSize = Math.min(rowHeight * 0.56, 26);
 
+  // Distance between the number column and the weekday column: the numbers stay
+  // on the outer edge, so only the weekday labels can move.
+  const gap = Math.max(0, Math.min(style.gap, designW - pad * 2 - 80));
+  const numberX = mirrored ? designW - pad - 4 : pad + 4;
+  const numberAnchor = mirrored ? 'right' : 'left';
+  const labelX = mirrored ? pad + 4 + gap : designW - pad - 4 - gap;
+  const labelAnchor = mirrored ? 'left' : 'right';
+
   for (let index = 0; index < daysInMonth; index += 1) {
     const day = index + 1;
     const centreY = top + rowHeight * (index + 0.5);
@@ -411,32 +427,41 @@ function drawVertical(pen, style) {
       );
     }
     pen.text(
-      pad + 4,
+      numberX,
       verticalBaseline(numberSize, centreY),
       String(day),
       numberSize,
       600,
       isToday ? style.accentText : style.fg,
       0,
+      numberAnchor,
     );
     if (style.showWeekdays) {
       const weekday = new Date(year, month, day).getDay();
       pen.text(
-        designW - pad - 4,
+        labelX,
         verticalBaseline(14, centreY),
         DAY_NAMES[weekday].slice(0, 3).toUpperCase(),
         14,
         500,
         isToday ? style.accentText : style.muted,
         1.4,
-        'right',
+        labelAnchor,
       );
     }
   }
 }
 
+function drawVerticalRight(pen, style) {
+  drawVertical(pen, style, true);
+}
+
 const DRAWERS = { grid: drawGrid, strip: drawStrip, minimal: drawMinimal };
-const LAYOUT_DRAWERS = { horizontal: drawHorizontal, vertical: drawVertical };
+const LAYOUT_DRAWERS = {
+  horizontal: drawHorizontal,
+  vertical: drawVertical,
+  'vertical-right': drawVerticalRight,
+};
 
 export function paintCalendar(ctx, width, height, props, { card = true } = {}) {
   const style = resolveStyle({ ...props, card });

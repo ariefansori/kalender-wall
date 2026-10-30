@@ -1,7 +1,10 @@
 """Built-in SVG shape library.
 
 Every shape is a single SVG path drawn in the universal ``0 0 100 100``
-viewBox, so a shape can be scaled to any box without distortion.  The path data
+viewBox.  The viewBox is mapped onto the whole widget box on each axis
+(``preserveAspectRatio="none"``), so the box is the truth: aspect-locked
+resizing keeps the box proportional and the shape undistorted, while free
+transform stretches it — a square really becomes a rectangle.  The path data
 is the single source of truth: the browser gets it from ``/api/config`` and
 paints it with ``Path2D``, the compositor rasterises the same path with
 cairosvg.
@@ -174,7 +177,7 @@ def shape_svg(shape_id: str, fill: str, stroke: str, stroke_width: float) -> str
     width = f'{round(float(stroke_width), 2)}' if stroke_attr != "none" else "0"
     return (
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" '
-        f'width="100" height="100" preserveAspectRatio="xMidYMid meet">'
+        f'width="100" height="100" preserveAspectRatio="none">'
         f'<path d="{shape["d"]}" fill="{fill_attr}" stroke="{stroke_attr}" '
         f'stroke-width="{width}" stroke-linejoin="round" stroke-linecap="round"/>'
         "</svg>"

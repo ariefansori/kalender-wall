@@ -274,7 +274,7 @@ function renderLayers() {
 
 function updateChrome() {
   const doc = state.doc;
-  document.title = `${doc.name} · HyprWall Studio`;
+  document.title = `${doc.name} · Kalender-Wall`;
   renderRatioBanner();
   dom.presetChip.textContent = doc.name;
   dom.dirtyState.textContent = state.dirty ? 'Unsaved changes' : state.slug ? 'Saved' : 'Not saved';
@@ -544,7 +544,11 @@ function updateSelectedProps(patch, { rebuild = false } = {}) {
     }
   }
   markDirty();
-  renderAll();
+  // Repaint the stage without rebuilding the inspector: a slider or colour
+  // picker that is being dragged must keep its own element alive.
+  stage.sync(state.doc, state.selection, state.baseSrc);
+  renderLayers();
+  updateChrome();
   if (rebuild) inspector.render(state);
 }
 
@@ -709,7 +713,7 @@ function addText() {
 function addCalendar(kind) {
   if (!requireBase()) return;
   pushHistory();
-  const widget = ['horizontal', 'vertical'].includes(kind)
+  const widget = ['horizontal', 'vertical', 'vertical-right'].includes(kind)
     ? newCalendarWidget(state.config, state.doc, 'grid', kind)
     : newCalendarWidget(state.config, state.doc, kind);
   state.doc.widgets.push(widget);
@@ -1319,7 +1323,7 @@ async function boot() {
     state.config = await api.getConfig();
     await loadFonts(state.config.fonts);
   } catch (error) {
-    showToast(`Could not start HyprWall Studio: ${error.message}`, { type: 'error', timeout: 0 });
+    showToast(`Could not start Kalender-Wall: ${error.message}`, { type: 'error', timeout: 0 });
     return;
   }
   setShapeLibrary(state.config.shapes);

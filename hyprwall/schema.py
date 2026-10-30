@@ -65,6 +65,9 @@ CALENDAR_DEFAULTS: dict[str, Any] = {
     "showTitle": True,
     "showWeekdays": True,
     "showLines": True,
+    #: Vertical layouts only: how far the weekday column is pulled towards the
+    #: day numbers (the numbers stay pinned to the outer screen edge).
+    "gap": 0,
     "radius": 28,
     "glass": False,
     "glassBlur": 18,
@@ -261,6 +264,7 @@ def _normalize_calendar_props(props: dict[str, Any]) -> dict[str, Any]:
         "showTitle": bool(props.get("showTitle", True)),
         "showWeekdays": bool(props.get("showWeekdays", True)),
         "showLines": bool(props.get("showLines", True)),
+        "gap": _clamp(props.get("gap", 0), 0, 260, 0),
         "radius": _clamp(props.get("radius", 28), 0, 300, 28),
         "glass": bool(props.get("glass", False)),
         "glassBlur": _clamp(props.get("glassBlur", 18), 0, 80, 18),
