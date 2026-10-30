@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "name": "Aircraft",
+  "theme": "dark",
+  "canvas": {
+    "width": 2560,
+    "height": 1440,
+    "background": "#101014"
+  },
+  "base": {
+    "file": "base.jpg",
+    "x": 0.0,
+    "y": 0.0,
+    "width": 2560.0,
+    "height": 1440.0,
+    "fit": "cover",
+    "opacity": 1,
+    "visible": true,
+    "flipX": false,
+    "flipY": false
+  },
+  "widgets": [
+    {
+      "id": "group-hnpx5hved",
+      "type": "group",
+      "x": 1803.1,
+      "y": 63.0,
+      "width": 720.0,
+      "height": 260.0,
+      "rotation": 0.0,
+      "opacity": 1,
+      "hidden": false,
+      "locked": false,
+      "props": {
+        "slug": "day-focus"
+      }
+    }
+  ],
+  "createdAt": "2026-10-29T20:13:22+07:00",
+  "updatedAt": "2026-10-29T20:13:22+07:00"
+}

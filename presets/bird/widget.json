@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "name": "Bird",
+  "theme": "light",
+  "canvas": {
+    "width": 2560,
+    "height": 1440,
+    "background": "#101014"
+  },
+  "base": {
+    "file": "base.jpg",
+    "x": 0.0,
+    "y": 0.0,
+    "width": 2560.0,
+    "height": 1440.0,
+    "fit": "cover",
+    "opacity": 1,
+    "visible": true,
+    "flipX": false,
+    "flipY": false
+  },
+  "widgets": [
+    {
+      "id": "cal-u4kasz3ir",
+      "type": "calendar",
+      "x": 57.7,
+      "y": -4.7,
+      "width": 488.4,
+      "height": 1441.8,
+      "rotation": 0.0,
+      "opacity": 1,
+      "hidden": false,
+      "locked": false,
+      "props": {
+        "style": "grid",
+        "layout": "vertical",
+        "date": null,
+        "weekStart": 1,
+        "font": "barlow-condensed",
+        "bg": "#f7f2e903",
+        "fg": "#ffffff",
+        "muted": "#9a9996",
+        "accent": "#26a269",
+        "accentText": "#fff6ec",
+        "showTitle": false,
+        "showWeekdays": true,
+        "showLines": true,
+        "radius": 28.0,
+        "glass": true,
+        "glassBlur": 31.0
+      }
+    }
+  ],
+  "createdAt": "2026-10-29T18:10:24+07:00",
+  "updatedAt": "2026-10-29T18:10:24+07:00"
+}

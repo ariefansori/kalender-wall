@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HyprWall Studio · Editor</title>
+  <meta name="description" content="Compose static calendar wallpapers for Hyprland + Caelestia.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="HyprWall Studio home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-text">HYPRWALL<small>STUDIO</small></span>
+    </a>
+    <nav class="tabs" data-nav aria-label="Sections"></nav>
+    <div class="topbar-actions">
+      <span class="preset-chip" id="presetChip">Untitled preset</span>
+      <button class="btn btn-ghost" id="btnNew" type="button">New</button>
+      <button class="btn btn-accent" id="btnSave" type="button" disabled>Save preset</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="panel panel-left" id="panelLeft" aria-label="Library">
+      <div class="panel-scroll">
+        <section class="acc is-open" data-acc>
+          <button class="acc-head" type="button" aria-expanded="true">
+            <span class="acc-glyph" aria-hidden="true">▣</span>
+            <span class="acc-label">Base image</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <label class="dropzone" id="baseDrop" for="baseInput">
+              <input type="file" id="baseInput" accept="image/*" hidden>
+              <span class="dropzone-mark" aria-hidden="true">＋</span>
+              <span class="dropzone-strong">Choose image</span>
+              <span class="dropzone-soft">or drop it on the canvas</span>
+            </label>
+            <div class="button-row">
+              <button class="btn btn-ghost btn-small" id="btnReplaceBase" type="button">Replace</button>
+              <button class="btn btn-ghost btn-small" id="btnRemoveBase" type="button">Remove</button>
+            </div>
+            <p class="hint">JPEG, PNG, WebP. The image keeps its own aspect ratio while you scale it.</p>
+          </div>
+        </section>
+
+        <section class="acc" data-acc>
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-glyph" aria-hidden="true">▦</span>
+            <span class="acc-label">Base widget</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <div class="add-grid">
+              <button class="add-card" type="button" data-add="text" disabled>
+                <span class="add-glyph">T</span>
+                <span class="add-label">Text</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-grid" disabled>
+                <span class="add-glyph">▦</span>
+                <span class="add-label">Month grid</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-strip" disabled>
+                <span class="add-glyph">▤</span>
+                <span class="add-label">Month strip</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-minimal" disabled>
+                <span class="add-glyph">26</span>
+                <span class="add-label">Minimal</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-horizontal" disabled>
+                <span class="add-glyph">⇔</span>
+                <span class="add-label">Horizontal strip</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-vertical" disabled>
+                <span class="add-glyph">⇕</span>
+                <span class="add-label">Vertical grid</span>
+              </button>
+            </div>
+            <p class="hint" id="baseHint">Set a base image to unlock widgets.</p>
+          </div>
+        </section>
+
+        <section class="acc" data-acc>
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-glyph" aria-hidden="true">❖</span>
+            <span class="acc-label">Reusable widgets</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <div class="widget-grid is-locked" id="widgetGrid"></div>
+            <p class="hint">Design a widget once on the <a href="/widgets">widget page</a>, drop it into any preset.</p>
+          </div>
+        </section>
+
+        <section class="acc" data-acc>
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-glyph" aria-hidden="true">◆</span>
+            <span class="acc-label">Stickers</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <h3 class="acc-sub">Images</h3>
+            <div class="sticker-grid is-locked" id="stickerGrid"></div>
+            <p class="hint">PNG, WebP, JPG, GIF or SVG files from <code>assets/stickers/</code>. Image stickers are transform-only: move, scale, rotate.</p>
+            <h3 class="acc-sub">SVG shape library</h3>
+            <div class="shape-grid is-locked" id="shapeGrid"></div>
+            <p class="hint">Every shape shares the universal <code>0 0 100 100</code> viewBox, with fill, stroke and stroke width.</p>
+          </div>
+        </section>
+
+        <section class="acc" data-acc>
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-glyph" aria-hidden="true">☰</span>
+            <span class="acc-label">Layers</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <div class="layer-toolbar">
+              <button class="btn btn-ghost btn-small" id="btnGroup" type="button"
+                title="Group two or more SVG layers into one &lt;g&gt; object (Ctrl+G)">Group</button>
+              <button class="btn btn-ghost btn-small" id="btnMask" type="button"
+                title="Clip the top layers to the shape of the bottom layer — needs 2 or more selected layers">Clip mask</button>
+              <button class="btn btn-ghost btn-small" id="btnMaskInvert" type="button"
+                title="Punch a live hole with the bottom layer's shape — needs 2 or more selected layers">Hole mask</button>
+              <button class="btn btn-ghost btn-small" id="btnUngroup" type="button"
+                title="Flatten a group or mask back into separate layers">Ungroup</button>
+            </div>
+            <p class="layer-warning" id="layerWarning" hidden></p>
+            <ul class="layers" id="layerList"></ul>
+            <p class="hint">Shift-click to select several layers. Groups and masks nest their children underneath; a mask needs 2 or more selected layers.</p>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <section class="stage-column" aria-label="Canvas">
+      <div class="stage-toolbar">
+        <button class="btn btn-icon panel-toggle" type="button" data-panel="panelLeft" aria-label="Toggle library">☰</button>
+        <div class="stage-meta">
+          <span id="canvasMeta">2560 × 1440 · dark</span>
+          <span class="dot">·</span>
+          <span id="dirtyState">Not saved</span>
+          <span class="dot">·</span>
+          <span id="selectionMeta">Nothing selected</span>
+        </div>
+        <div class="stage-actions">
+          <div class="seg seg-compact" id="resizeMode" role="group" aria-label="Resize handles">
+            <button class="seg-btn is-active" type="button" data-resize="aspect" title="Handles keep the aspect ratio">Aspect</button>
+            <button class="seg-btn" type="button" data-resize="free" title="Handles resize width and height independently">Free</button>
+          </div>
+          <div class="zoom-bar" role="group" aria-label="Canvas zoom">
+            <button class="btn btn-icon btn-small" id="btnZoomOut" type="button" title="Zoom out (Ctrl + −)">−</button>
+            <button class="btn btn-ghost btn-small zoom-value" id="btnZoomLevel" type="button" title="Reset zoom (Ctrl + 0)">100%</button>
+            <button class="btn btn-icon btn-small" id="btnZoomIn" type="button" title="Zoom in (Ctrl + +)">＋</button>
+          </div>
+          <button class="btn btn-ghost btn-small panel-toggle" type="button" data-panel="panelRight">Inspector</button>
+          <button class="btn btn-ghost btn-small" id="btnExport" type="button">Export PNG</button>
+          <button class="btn btn-ghost btn-small" id="btnApply" type="button">Set as wallpaper</button>
+        </div>
+      </div>
+
+      <div class="ratio-banner" id="ratioBanner" hidden>
+        <span class="ratio-banner-mark" aria-hidden="true">!</span>
+        <p id="ratioBannerText"></p>
+        <button class="btn btn-ghost btn-small" id="btnAdapt" type="button">Adapt to canvas</button>
+      </div>
+
+      <div class="stage-frame">
+        <div class="stage" id="stage" tabindex="0">
+          <div class="stage-content">
+            <div class="base-box" id="baseBox" data-widget-id="base" hidden>
+              <img id="baseImage" alt="Base image">
+            </div>
+            <div class="widget-layer" id="widgetLayer"></div>
+            <div class="stage-empty" id="stageEmpty">
+              <span class="empty-mark" aria-hidden="true">＋</span>
+              <p><strong>Drop a base image</strong> or choose a file</p>
+              <p class="empty-sub">2560 × 1440 canvas · widgets are composed on top of it</p>
+              <button class="btn btn-accent" id="emptyPick" type="button">Choose image</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="stage-footer">
+        <span>Drag to move · <kbd>Shift</kbd> + click to multi-select · handles resize · <kbd>Ctrl</kbd> + wheel zooms</span>
+        <span class="stage-footer-right">Built for Hyprland + Caelestia</span>
+      </footer>
+    </section>
+
+    <aside class="panel panel-right" id="panelRight" aria-label="Inspector">
+      <div class="panel-scroll">
+        <div class="inspector-empty" id="inspectorEmpty">
+          <p class="eyebrow">Inspector</p>
+          <h2>Nothing selected</h2>
+          <p>Pick a widget, shape or layer on the canvas or in the layer tree to edit its position, transform, colours and content.</p>
+          <kbd>Del</kbd> deletes · <kbd>⌘/Ctrl</kbd> + <kbd>D</kbd> duplicates · <kbd>⌘/Ctrl</kbd> + <kbd>G</kbd> groups
+        </div>
+        <div class="inspector" id="inspectorBody" hidden></div>
+      </div>
+    </aside>
+  </main>
+
+  <dialog id="saveDialog" aria-labelledby="saveTitle">
+    <form id="saveForm" class="dialog-card">
+      <p class="eyebrow">Preset</p>
+      <h2 id="saveTitle">Save preset</h2>
+      <p class="dialog-sub">Stored in <code>presets/&lt;slug&gt;/</code> as <code>base.jpg</code> + <code>widget.json</code>.</p>
+      <label class="field">
+        <span class="field-label">Name</span>
+        <input id="presetName" type="text" maxlength="80" required autocomplete="off">
+      </label>
+      <fieldset class="theme-picker">
+        <legend>Theme</legend>
+        <label class="theme-option">
+          <input type="radio" name="theme" value="light">
+          <span class="theme-swatch theme-swatch-light"></span>
+          <span><strong>Light</strong><small>used from 07:00 to 19:00</small></span>
+        </label>
+        <label class="theme-option">
+          <input type="radio" name="theme" value="dark">
+          <span class="theme-swatch theme-swatch-dark"></span>
+          <span><strong>Dark</strong><small>used at night</small></span>
+        </label>
+      </fieldset>
+      <footer class="dialog-actions">
+        <button class="btn btn-ghost" id="cancelSave" type="button">Cancel</button>
+        <button class="btn btn-accent" id="confirmSave" type="submit">Save preset</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <script type="module" src="/static/js/editor.js"></script>
+</body>
+</html>

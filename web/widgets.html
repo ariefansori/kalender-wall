@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HyprWall Studio · Widgets</title>
+  <meta name="description" content="Design reusable widgets with date tokens and rules, then drop them into wallpaper presets.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="HyprWall Studio home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-text">HYPRWALL<small>STUDIO</small></span>
+    </a>
+    <nav class="tabs" data-nav aria-label="Sections"></nav>
+    <div class="topbar-actions">
+      <span class="preset-chip" id="widgetChip">Untitled widget</span>
+      <button class="btn btn-ghost" id="btnNewWidget" type="button">New</button>
+      <button class="btn btn-ghost btn-danger" id="btnDeleteWidget" type="button" disabled>Delete</button>
+      <button class="btn btn-accent" id="btnSaveWidget" type="button">Save widget</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="panel panel-left" id="panelLeft" aria-label="Widget library">
+      <div class="panel-scroll">
+        <section class="acc is-open" data-acc>
+          <button class="acc-head" type="button" aria-expanded="true">
+            <span class="acc-glyph" aria-hidden="true">❖</span>
+            <span class="acc-label">Library</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <ul class="library-list" id="widgetLibrary"></ul>
+            <p class="hint" id="libraryCount">0 widgets</p>
+          </div>
+        </section>
+
+        <section class="acc" data-acc>
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-glyph" aria-hidden="true">▭</span>
+            <span class="acc-label">New widget</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <div class="add-grid">
+              <button class="add-card" type="button" data-new-size="480x200">
+                <span class="add-glyph">▭</span>
+                <span class="add-label">Chip 480×200</span>
+              </button>
+              <button class="add-card" type="button" data-new-size="720x280">
+                <span class="add-glyph">▬</span>
+                <span class="add-label">Wide 720×280</span>
+              </button>
+              <button class="add-card" type="button" data-new-size="520x520">
+                <span class="add-glyph">◻</span>
+                <span class="add-label">Square 520</span>
+              </button>
+              <button class="add-card" type="button" data-new-size="900x180">
+                <span class="add-glyph">▁</span>
+                <span class="add-label">Strip 900×180</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="acc" data-acc>
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-glyph" aria-hidden="true">▦</span>
+            <span class="acc-label">Add layer</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <div class="add-grid">
+              <button class="add-card" type="button" data-add="text">
+                <span class="add-glyph">T</span>
+                <span class="add-label">Text</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-grid">
+                <span class="add-glyph">▦</span>
+                <span class="add-label">Month grid</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-strip">
+                <span class="add-glyph">▤</span>
+                <span class="add-label">Month strip</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-minimal">
+                <span class="add-glyph">26</span>
+                <span class="add-label">Minimal</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-horizontal">
+                <span class="add-glyph">⇔</span>
+                <span class="add-label">Horizontal strip</span>
+              </button>
+              <button class="add-card" type="button" data-add="calendar-vertical">
+                <span class="add-glyph">⇕</span>
+                <span class="add-label">Vertical grid</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="acc" data-acc>
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-glyph" aria-hidden="true">◆</span>
+            <span class="acc-label">Stickers</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <h3 class="acc-sub">Images</h3>
+            <div class="sticker-grid" id="stickerGrid"></div>
+            <h3 class="acc-sub">SVG shape library</h3>
+            <div class="shape-grid" id="shapeGrid"></div>
+            <p class="hint">Image stickers are transform-only; shapes carry fill, stroke and stroke width.</p>
+          </div>
+        </section>
+
+        <section class="acc" data-acc>
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-glyph" aria-hidden="true">▤</span>
+            <span class="acc-label">Canvas</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <label class="field">
+              <span class="field-label">Name</span>
+              <input id="widgetName" type="text" maxlength="80" autocomplete="off" placeholder="Date chip">
+            </label>
+            <div class="grid-2">
+              <label class="field">
+                <span class="field-label">Width</span>
+                <input id="widgetWidth" type="number" min="80" max="4096" step="1" inputmode="numeric">
+              </label>
+              <label class="field">
+                <span class="field-label">Height</span>
+                <input id="widgetHeight" type="number" min="80" max="4096" step="1" inputmode="numeric">
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="acc" data-acc>
+          <button class="acc-head" type="button" aria-expanded="false">
+            <span class="acc-glyph" aria-hidden="true">☰</span>
+            <span class="acc-label">Layers</span>
+            <span class="acc-mark" aria-hidden="true"></span>
+          </button>
+          <div class="acc-body">
+            <div class="layer-toolbar">
+              <button class="btn btn-ghost btn-small" id="btnGroup" type="button"
+                title="Group two or more SVG layers into one &lt;g&gt; object (Ctrl+G)">Group</button>
+              <button class="btn btn-ghost btn-small" id="btnMask" type="button"
+                title="Clip the top layers to the shape of the bottom layer — needs 2 or more selected layers">Clip mask</button>
+              <button class="btn btn-ghost btn-small" id="btnMaskInvert" type="button"
+                title="Punch a live hole with the bottom layer's shape — needs 2 or more selected layers">Hole mask</button>
+              <button class="btn btn-ghost btn-small" id="btnUngroup" type="button">Ungroup</button>
+            </div>
+            <p class="layer-warning" id="layerWarning" hidden></p>
+            <ul class="layers" id="layerList"></ul>
+            <p class="hint">Shift-click to select several layers. A mask needs 2 or more.</p>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <section class="stage-column" aria-label="Widget canvas">
+      <div class="stage-toolbar">
+        <button class="btn btn-icon panel-toggle" type="button" data-panel="panelLeft" aria-label="Toggle library">☰</button>
+        <div class="stage-meta">
+          <span id="canvasMeta">720 × 280</span>
+          <span class="dot">·</span>
+          <span id="dirtyState">Not saved</span>
+          <span class="dot">·</span>
+          <span id="selectionMeta">Nothing selected</span>
+        </div>
+        <div class="stage-actions">
+          <div class="seg seg-compact" id="resizeMode" role="group" aria-label="Resize handles">
+            <button class="seg-btn is-active" type="button" data-resize="aspect" title="Handles keep the aspect ratio">Aspect</button>
+            <button class="seg-btn" type="button" data-resize="free" title="Handles resize width and height independently">Free</button>
+          </div>
+          <button class="btn btn-ghost btn-small panel-toggle" type="button" data-panel="panelRight">Inspector</button>
+          <button class="btn btn-ghost btn-small" id="btnExportWidget" type="button">Export PNG</button>
+          <a class="btn btn-ghost btn-small" href="/" id="editorLink">Open editor</a>
+        </div>
+      </div>
+
+      <div class="stage-frame">
+        <div class="stage stage-widget" id="stage" tabindex="0">
+          <div class="stage-content">
+            <div class="widget-layer" id="widgetLayer"></div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="stage-footer">
+        <span>Transparent design canvas · tokens resolve at render time</span>
+        <span class="stage-footer-right">{day} {month} {year} · {if:weekday=Monday?…:…}</span>
+      </footer>
+    </section>
+
+    <aside class="panel panel-right" id="panelRight" aria-label="Inspector">
+      <div class="panel-scroll">
+        <div class="inspector-empty" id="inspectorEmpty">
+          <p class="eyebrow">Inspector</p>
+          <h2>Nothing selected</h2>
+          <p>Select a layer on the canvas to edit text, date tokens, fonts, colours and layout.</p>
+          <p class="hint">Tokens: <code>{day}</code>, <code>{day:02}</code>, <code>{day+1}</code>, <code>{month}</code>, <code>{year}</code>.</p>
+        </div>
+        <div class="inspector" id="inspectorBody" hidden></div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <script type="module" src="/static/js/widgets.js"></script>
+</body>
+</html>

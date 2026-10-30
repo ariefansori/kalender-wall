@@ -1,0 +1,38 @@
+[project]
+name = "hyprwall"
+version = "1.0.0"
+description = "Static calendar wallpapers for Hyprland + Caelestia, with a visual web editor and a login CLI."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pillow>=10.3",
+    "python-multipart>=0.0.9",
+    # SVG stickers: needs the system libcairo (arch: cairo) at runtime.
+    "cairosvg>=2.7",
+]
+
+[project.scripts]
+hyprwall = "hyprwall.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["hyprwall"]
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"hyprwall/server.py" = ["B008"]

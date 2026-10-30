@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HyprWall Studio · Options</title>
+  <meta name="description" content="Canvas size, clock theme and desktop wallpaper command for HyprWall Studio.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="HyprWall Studio home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-text">HYPRWALL<small>STUDIO</small></span>
+    </a>
+    <nav class="tabs" data-nav aria-label="Sections"></nav>
+    <div class="topbar-actions">
+      <span class="preset-chip" id="configChip">Options</span>
+      <button class="btn btn-accent" id="btnSaveOptions" type="button">Save options</button>
+    </div>
+  </header>
+
+  <main class="page-main options-main">
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Preferences</p>
+        <h1>Options</h1>
+        <p class="page-sub">          The canvas every wallpaper is composed at, the light/dark schedule that switches the
+          theme, and the command that puts the composed image on your desktop.
+        </p>
+      </div>
+      <div class="page-actions">
+        <a class="btn btn-ghost" href="/">Open editor</a>
+        <button class="btn btn-accent" id="btnSaveOptionsBottom" type="button">Save options</button>
+      </div>
+    </header>
+
+    <div class="options-grid">
+      <section class="opt-card">
+        <h2 class="card-title">Canvas</h2>
+        <p class="card-hint">
+          Every preset is composed at this resolution. Presets whose source image matches
+          the resulting aspect ratio can be applied; others have to be adapted in the editor first.
+        </p>
+        <div class="size-presets" id="sizePresets" role="group" aria-label="Common canvas sizes"></div>
+        <div class="grid-2">
+          <label class="field">
+            <span class="field-label">Width</span>
+            <input id="canvasWidth" type="number" min="320" max="8192" step="1" inputmode="numeric">
+          </label>
+          <label class="field">
+            <span class="field-label">Height</span>
+            <input id="canvasHeight" type="number" min="320" max="8192" step="1" inputmode="numeric">
+          </label>
+        </div>
+        <div class="ratio-readout" aria-live="polite">
+          <span class="field-label">Aspect ratio</span>
+          <strong id="ratioValue">16:9</strong>
+          <small id="ratioDetail">2560 × 1440 · 1.7778</small>
+        </div>
+      </section>
+
+      <section class="opt-card">
+        <h2 class="card-title">Clock theme schedule</h2>
+        <p class="card-hint">
+          Light and dark switch automatically at these times instead of staying fixed.
+          The schedule picks the theme for new presets and for the wallpaper applied at login;
+          saved presets keep the theme they were designed with.
+        </p>
+        <div class="grid-2">
+          <label class="field">
+            <span class="field-label">Light starts</span>
+            <input id="lightStart" type="time" step="60" required>
+          </label>
+          <label class="field">
+            <span class="field-label">Dark starts</span>
+            <input id="darkStart" type="time" step="60" required>
+          </label>
+        </div>
+        <div class="schedule-readout" aria-live="polite">
+          <span class="schedule-badge is-dark" id="activeTheme">Dark now</span>
+          <small id="scheduleSummary">Light 07:00 – 19:00 · Dark 19:00 – 07:00</small>
+        </div>
+      </section>
+
+      <section class="opt-card opt-card-wide">
+        <h2 class="card-title">Desktop wallpaper command</h2>
+        <p class="card-hint">
+          The selected strategy is tried first; other detected backends stay available as a
+          fallback, so a busy login session still gets a wallpaper.
+        </p>
+        <div class="backend-list" id="backendList" role="radiogroup" aria-label="Wallpaper command"></div>
+        <label class="field" id="customCommandField" hidden>
+          <span class="field-label">Custom command</span>
+          <input id="customCommand" type="text" spellcheck="false" autocomplete="off" placeholder="swaybg -i {path}">
+          <span class="field-hint">Use <code>{path}</code> (or <code>{file}</code>) where the rendered image goes. Without a token the path is appended.</span>
+        </label>
+        <p class="card-hint" id="outputHint"></p>
+      </section>
+    </div>
+  </main>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <script type="module" src="/static/js/options.js"></script>
+</body>
+</html>

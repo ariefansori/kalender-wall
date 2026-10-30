@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "name": "GunnerRed",
+  "theme": "dark",
+  "canvas": {
+    "width": 2560,
+    "height": 1440,
+    "background": "#101014"
+  },
+  "base": {
+    "file": "base.jpg",
+    "x": 0.0,
+    "y": 0.0,
+    "width": 2560.0,
+    "height": 1440.0,
+    "fit": "cover",
+    "opacity": 1,
+    "visible": true,
+    "flipX": false,
+    "flipY": false
+  },
+  "widgets": [
+    {
+      "id": "sticker-qe52bru3x",
+      "type": "sticker",
+      "x": 1973.7,
+      "y": 862.0,
+      "width": 728.6,
+      "height": 728.6,
+      "rotation": 0.0,
+      "opacity": 1,
+      "hidden": false,
+      "locked": true,
+      "props": {
+        "src": "cross.svg"
+      }
+    },
+    {
+      "id": "shape-8fvxar3ap",
+      "type": "shape",
+      "x": 1956.4,
+      "y": 811.9,
+      "width": 779.4,
+      "height": 779.4,
+      "rotation": 0.0,
+      "opacity": 1,
+      "hidden": false,
+      "locked": false,
+      "props": {
+        "shape": "octagon",
+        "fill": "#231818ff",
+        "stroke": "#00000000",
+        "strokeWidth": 0
+      }
+    },
+    {
+      "id": "cal-ly6oxxfcz",
+      "type": "calendar",
+      "x": 2157.0,
+      "y": 873.6,
+      "width": 546.9,
+      "height": 673.3,
+      "rotation": 0.0,
+      "opacity": 1,
+      "hidden": false,
+      "locked": true,
+      "props": {
+        "style": "minimal",
+        "layout": "auto",
+        "date": null,
+        "weekStart": 1,
+        "font": "barlow-condensed",
+        "bg": "#00000000",
+        "fg": "#d32e50",
+        "muted": "#ffffff",
+        "accent": "#deddda",
+        "accentText": "#ffffff",
+        "showTitle": true,
+        "showWeekdays": true,
+        "showLines": true,
+        "radius": 28.0,
+        "glass": false,
+        "glassBlur": 18.0
+      }
+    }
+  ],
+  "createdAt": "2026-10-28T00:59:05+07:00",
+  "updatedAt": "2026-10-29T18:20:10+07:00"
+}

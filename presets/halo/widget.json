@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "name": "Halo",
+  "theme": "dark",
+  "canvas": {
+    "width": 2560,
+    "height": 1440,
+    "background": "#101014"
+  },
+  "base": {
+    "file": "base.jpg",
+    "x": 0.0,
+    "y": 0.0,
+    "width": 2560.0,
+    "height": 1440.0,
+    "fit": "cover",
+    "opacity": 1,
+    "visible": true
+  },
+  "widgets": [
+    {
+      "id": "cal-z1nh6tcsd",
+      "type": "calendar",
+      "x": 2004.4,
+      "y": 769.2,
+      "width": 520.0,
+      "height": 640.0,
+      "rotation": 0.0,
+      "opacity": 1,
+      "props": {
+        "style": "minimal",
+        "date": null,
+        "weekStart": 1,
+        "font": "barlow-condensed",
+        "bg": "#00000000",
+        "fg": "#f4efe6",
+        "muted": "#8b8b8b",
+        "accent": "#e2342b",
+        "accentText": "#fdf6ec",
+        "showTitle": true,
+        "showWeekdays": true,
+        "showLines": true,
+        "radius": 28.0
+      }
+    }
+  ],
+  "createdAt": "2026-10-27T21:44:32+07:00",
+  "updatedAt": "2026-10-27T21:44:32+07:00"
+}

@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "name": "Quattro",
+  "theme": "light",
+  "canvas": {
+    "width": 2560,
+    "height": 1440,
+    "background": "#101014"
+  },
+  "base": {
+    "file": "base.jpg",
+    "x": 0.0,
+    "y": 0.0,
+    "width": 2560.0,
+    "height": 1440.0,
+    "fit": "cover",
+    "opacity": 1,
+    "visible": true,
+    "flipX": false,
+    "flipY": false
+  },
+  "widgets": [
+    {
+      "id": "cal-94u0sb100",
+      "type": "calendar",
+      "x": 1865.6,
+      "y": 937.4,
+      "width": 676.1,
+      "height": 476.4,
+      "rotation": 0.0,
+      "opacity": 1,
+      "hidden": false,
+      "locked": false,
+      "props": {
+        "style": "grid",
+        "layout": "auto",
+        "date": null,
+        "weekStart": 1,
+        "font": "barlow-condensed",
+        "bg": "#10101400",
+        "fg": "#000000",
+        "muted": "#3d3846",
+        "accent": "#f5c211",
+        "accentText": "#fdf6ec",
+        "showTitle": true,
+        "showWeekdays": true,
+        "showLines": true,
+        "radius": 28.0,
+        "glass": false,
+        "glassBlur": 18.0
+      }
+    }
+  ],
+  "createdAt": "2026-10-29T20:12:08+07:00",
+  "updatedAt": "2026-10-29T20:12:08+07:00"
+}

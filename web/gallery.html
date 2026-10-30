@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HyprWall Studio · Gallery</title>
+  <meta name="description" content="Browse saved wallpaper presets and set them on Hyprland with Caelestia.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="HyprWall Studio home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-text">HYPRWALL<small>STUDIO</small></span>
+    </a>
+    <nav class="tabs" data-nav aria-label="Sections"></nav>
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="/">Open editor</a>
+      <a class="btn btn-accent" href="/?new=1">New preset</a>
+    </div>
+  </header>
+
+  <main class="page-main gallery-main">
+    <section class="gallery-hero">
+      <div>
+        <p class="eyebrow">Preset library</p>
+        <h1>Static <em>wallpapers</em></h1>
+        <p>
+          Pick a preset and compose it into a single image at full canvas resolution.
+          Each run writes a fresh <code>~/.cache/current_wallpaper-&lt;timestamp&gt;.jpg</code>
+          and hands it to the Caelestia shell; older compositions are removed.
+        </p>
+        <div class="gallery-stats" id="galleryStats"></div>
+      </div>
+      <div class="gallery-actions">
+        <a class="btn btn-ghost" href="/">Open editor</a>
+        <a class="btn btn-accent" href="/?new=1">New preset</a>
+      </div>
+    </section>
+
+    <div class="gallery-bar" id="galleryBar">
+      <div class="gallery-filters" id="galleryFilters" role="group" aria-label="Filter by theme"></div>
+      <button class="btn btn-ghost btn-small" id="refreshBtn" type="button">Refresh</button>
+    </div>
+
+    <section class="gallery-grid" id="galleryGrid" aria-live="polite"></section>
+
+    <div class="gallery-empty" id="galleryEmpty" hidden>
+      <h2>No presets yet</h2>
+      <p>Start in the editor: choose a base image, add a calendar or some type, then “Save preset”.</p>
+      <a class="btn btn-accent" href="/?new=1">Create your first preset</a>
+    </div>
+  </main>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <script type="module" src="/static/js/gallery.js"></script>
+</body>
+</html>

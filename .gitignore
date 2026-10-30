@@ -1,0 +1,31 @@
+# HyprWall Studio tracks only what the project is made of: source, presets,
+# widgets, fonts/stickers, docs and the vendored lockfile. Everything a run,
+# a tool or the desktop generates stays out of the repository.
+
+# Python environment and build artefacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Freebuff / editor sandbox (machine-local app data)
+.freebuff/
+freebuff.AppImage.config/
+
+# Local runs and captures
+*.log
+screenshot*.png
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HyprWall Studio · Wallpaper test</title>
+  <meta name="description" content="Simulate the composed calendar wallpaper at any date and time without touching the desktop.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="HyprWall Studio home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-text">HYPRWALL<small>STUDIO</small></span>
+    </a>
+    <nav class="tabs" data-nav aria-label="Sections"></nav>
+    <div class="topbar-actions">
+      <span class="preset-chip" id="testChip">Wallpaper test</span>
+      <button class="btn btn-accent" id="btnRandom" type="button">Random wallpaper</button>
+    </div>
+  </header>
+
+  <main class="page-main test-main">
+    <aside class="test-side">
+      <section class="test-card">
+        <h2>Wallpapers</h2>
+        <div class="test-presets" id="presetList">
+          <p class="hint">Loading presets…</p>
+        </div>
+      </section>
+
+      <section class="test-card test-clock">
+        <h2>Simulated date &amp; time</h2>
+        <div class="field">
+          <span class="field-label">Date</span>
+          <div class="inline-row">
+            <button class="btn btn-ghost btn-small" id="btnPrevDay" type="button" title="Previous day">‹</button>
+            <input type="date" id="dateInput">
+            <button class="btn btn-ghost btn-small" id="btnNextDay" type="button" title="Next day">›</button>
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="btn btn-ghost btn-small" id="btnToday" type="button">Today</button>
+          <button class="btn btn-ghost btn-small" id="btnRandomDay" type="button">Random day</button>
+        </div>
+        <label class="field">
+          <span class="field-label">Time of day</span>
+          <input type="time" id="timeInput">
+        </label>
+        <div class="seg" id="timePresets">
+          <button class="seg-btn" type="button" data-time="07:30">Morning</button>
+          <button class="seg-btn" type="button" data-time="13:00">Midday</button>
+          <button class="seg-btn" type="button" data-time="22:30">Night</button>
+        </div>
+        <p class="hint">
+          The time only decides which theme the day/night window would pick. Everything is rendered
+          on this page — the desktop wallpaper is never changed.
+        </p>
+      </section>
+    </aside>
+
+    <section class="test-stage">
+      <div class="test-frame" id="previewFrame">
+        <img id="previewImage" alt="Composed wallpaper preview">
+        <span class="test-status" id="testStatus">Idle</span>
+      </div>
+      <div class="test-meta" id="testMeta"></div>
+    </section>
+  </main>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <script type="module" src="/static/js/test.js"></script>
+</body>
+</html>

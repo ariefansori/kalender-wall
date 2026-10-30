@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "name": "Day focus",
+  "size": {
+    "width": 720,
+    "height": 260
+  },
+  "widgets": [
+    {
+      "id": "day-number",
+      "type": "text",
+      "x": 47.7,
+      "y": 0.1,
+      "width": 269.6,
+      "height": 283.8,
+      "rotation": 0.0,
+      "opacity": 1,
+      "props": {
+        "text": "{day}",
+        "font": "bebas",
+        "weight": 400,
+        "size": 300.0,
+        "color": "#f4efe6",
+        "align": "right",
+        "lineHeight": 1.0,
+        "letterSpacing": 0.0,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "weekday",
+      "type": "text",
+      "x": 330.0,
+      "y": 21.6,
+      "width": 380.0,
+      "height": 70.0,
+      "rotation": 0.0,
+      "opacity": 1,
+      "props": {
+        "text": "{weekday:upper}",
+        "font": "plex-mono",
+        "weight": 600,
+        "size": 42.0,
+        "color": "#e2342b",
+        "align": "left",
+        "lineHeight": 1.0,
+        "letterSpacing": 2.0,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "month-line",
+      "type": "text",
+      "x": 330.0,
+      "y": 92.0,
+      "width": 380.0,
+      "height": 60.0,
+      "rotation": 0.0,
+      "opacity": 1,
+      "props": {
+        "text": "{month} {year}",
+        "font": "barlow-condensed",
+        "weight": 600,
+        "size": 40.0,
+        "color": "#f4efe6",
+        "align": "left",
+        "lineHeight": 1.0,
+        "letterSpacing": 1.0,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "motto",
+      "type": "text",
+      "x": 331.8,
+      "y": 149.8,
+      "width": 360.0,
+      "height": 70.0,
+      "rotation": 0.0,
+      "opacity": 1,
+      "props": {
+        "text": "{if:weekday=Monday?New week starts:Make it count}",
+        "font": "barlow",
+        "weight": 500,
+        "size": 26.0,
+        "color": "#8f8a82",
+        "align": "left",
+        "lineHeight": 1.0,
+        "letterSpacing": 0.0,
+        "uppercase": false
+      }
+    }
+  ],
+  "createdAt": "2026-10-27T00:00:00+07:00",
+  "updatedAt": "2026-10-27T02:02:50+07:00"
+}
