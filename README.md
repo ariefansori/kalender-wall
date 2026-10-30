@@ -405,11 +405,13 @@ the other detected ones (`hyprland-caelestia` → `hyprland` → `kde` → `gnom
 `custom`), and reports which one won. `apply_wallpaper()` never raises when no
 backend works: it still writes the composed file and prints a hint.
 
-### Hyprland autostart
+### Caelestia autostart
 
-```conf
-# ~/.config/hypr/hyprland.conf
-exec-once = sleep 3 && /home/<you>/Projects/kalender-wall/.venv/bin/hyprwall apply --retry 5 --retry-delay 2 --quiet
+~/.config/caelestia/hypr-user.lua
+```lua
+hl.on("hyprland.start", function()
+    hl.exec_cmd("sleep 3 && /home/asa/Projects/kalender-wall/.venv/bin/hyprwall apply --retry 5 --retry-delay 2 --quiet")
+end)
 ```
 
 ## Configuration
