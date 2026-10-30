@@ -2,6 +2,8 @@
   "version": 1,
   "name": "Aircraft",
   "theme": "dark",
+  "sourceWidth": 1920,
+  "sourceHeight": 1080,
   "canvas": {
     "width": 2560,
     "height": 1440,
@@ -9,6 +11,7 @@
   },
   "base": {
     "file": "base.jpg",
+    "original": "",
     "x": 0.0,
     "y": 0.0,
     "width": 2560.0,
@@ -37,5 +40,5 @@
     }
   ],
   "createdAt": "2026-10-29T20:13:22+07:00",
-  "updatedAt": "2026-10-29T20:13:22+07:00"
+  "updatedAt": "2026-10-30T17:56:26+07:00"
 }

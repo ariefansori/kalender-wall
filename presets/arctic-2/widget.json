@@ -2,6 +2,8 @@
   "version": 1,
   "name": "Arctic",
   "theme": "light",
+  "sourceWidth": 5363,
+  "sourceHeight": 3017,
   "canvas": {
     "width": 2560,
     "height": 1440,
@@ -9,9 +11,10 @@
   },
   "base": {
     "file": "base.jpg",
-    "x": 19.35357492654248,
+    "original": "original-image.jpg",
+    "x": 0.0,
     "y": 0.0,
-    "width": 2521.292850146915,
+    "width": 2560.0,
     "height": 1440.0,
     "fit": "cover",
     "opacity": 1,
@@ -52,5 +55,5 @@
     }
   ],
   "createdAt": "2026-10-29T18:14:20+07:00",
-  "updatedAt": "2026-10-29T18:15:41+07:00"
+  "updatedAt": "2026-10-30T17:58:42+07:00"
 }

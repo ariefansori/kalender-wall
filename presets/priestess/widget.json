@@ -2,6 +2,8 @@
   "version": 1,
   "name": "Priestess",
   "theme": "dark",
+  "sourceWidth": 4619,
+  "sourceHeight": 2598,
   "canvas": {
     "width": 2560,
     "height": 1440,
@@ -9,29 +11,34 @@
   },
   "base": {
     "file": "base.jpg",
-    "x": 23.60408009066873,
+    "original": "original-image.jpg",
+    "x": 0.0,
     "y": 0.0,
-    "width": 2512.7918398186625,
+    "width": 2560.0,
     "height": 1440.0,
     "fit": "cover",
     "opacity": 1,
-    "visible": true
+    "visible": true,
+    "flipX": false,
+    "flipY": false
   },
   "widgets": [
     {
       "id": "group-92p84xr8o",
       "type": "group",
-      "x": 1803.1,
-      "y": 1155.0,
-      "width": 720.0,
-      "height": 260.0,
+      "x": 1844.3,
+      "y": 1093.3,
+      "width": 688.3,
+      "height": 326.5,
       "rotation": 0.0,
       "opacity": 1,
+      "hidden": false,
+      "locked": false,
       "props": {
         "slug": "day-focus"
       }
     }
   ],
   "createdAt": "2026-10-27T21:38:38+07:00",
-  "updatedAt": "2026-10-27T21:38:38+07:00"
+  "updatedAt": "2026-10-30T18:06:04+07:00"
 }
