@@ -410,7 +410,7 @@ backend works: it still writes the composed file and prints a hint.
 ~/.config/caelestia/hypr-user.lua
 ```lua
 hl.on("hyprland.start", function()
-    hl.exec_cmd("sleep 3 && /home/asa/Projects/kalender-wall/.venv/bin/hyprwall apply --retry 5 --retry-delay 2 --quiet")
+    hl.exec_cmd("sleep 3 && /home/<USERNAME>/Projects/kalender-wall/.venv/bin/hyprwall apply --retry 5 --retry-delay 2 --quiet")
 end)
 ```
 
